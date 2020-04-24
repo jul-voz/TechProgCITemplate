@@ -17,9 +17,6 @@ jobs:
           repository: 'google/googletest'
           path: '3rdparty'
 
-      - name: Preprocess
-        run: mv 3rdparty ..
-
       - name: Build
         run: |
           cmake .
