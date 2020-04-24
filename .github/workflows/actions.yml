@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: 'google/googletest'
+          path: '3rdparty'
+
+      - name: Preprocess
+        run: mv 3rdparty ..
+
+      - name: Build
+        run: |
+          cmake .
+          cmake --build .
+
+      - name: Test
+        uses: akhtyamovpavel/ActionGtestReport@v0.0.9
+        with:
+          exec-path: 'C'
+          report-path: '.'
+          working-directory: '.'
+
+      - name: PreUpload
+        run: |
+          mkdir result
+          mv bin result/bin
+          mv lib result/lib
+
+      - name: UploadArtifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: result
+          path: result
